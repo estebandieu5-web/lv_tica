@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>lv_tica</title>
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700&display=swap" rel="stylesheet">
+
+  <!-- favicon -->
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+  <!-- CSS optimisé -->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="container">
+      <a href="#about">
+        <video id="logoVideo" autoplay muted playsinline style="height:65px; pointer-events:none;">
+          <source src="videos/logo-video.mp4" type="video/mp4">
+        </video>
+      </a>
+
+      <nav class="main-nav">
+        <ul>
+          <li><a href="#about">About</a></li>
+          <li><a href="#work">Works</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+
+      <button id="theme-toggle" class="theme-toggle" aria-pressed="false">☾ / ☼</button>
+    </div>
+  </header>
+
+  <!-- ABOUT -->
+  <section id="about" class="about">
+    <div class="container">
+      <div class="row">
+
+        <div class="col-6">
+          <img src="images/photo-portrait.png" alt="Portrait" class="portrait">
+        </div>
+
+        <div class="col-6">
+          <h1>About</h1>
+          <div class="about-text">
+            <p>As a passionate graphic designer, I create unique and striking visual identities. My approach combines minimalism, creativity and attention to detail to bring your ideas to life with style and authenticity.</p>
+            <p style="margin-top:12px;">Let's build your visual universe together.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- WORK / PEZZO -->
+  <section id="work" class="pezzo">
+    <div class="container">
+      <div class="row">
+
+        <div class="col-4">
+          <h1 class="pezzo-title">Work</h1>
+          <p class="pezzo-description">
+            I have designed a variety of creative projects ranging from branding to digital interfaces. Each project reflects my attention to detail, innovation, and passion for visual storytelling.
+          </p>
+        </div>
+
+        <div class="col-8">
+          <div class="work-grid" id="workGrid">
+            <div class="project"><img src="images/pezzo-image1.png" alt="Project 1" data-index="0"></div>
+            <div class="project"><img src="images/pezzo-image2.png" alt="Project 2" data-index="1"></div>
+            <div class="project"><img src="images/magazine.png" alt="Project 3" data-index="2"></div>
+            <div class="project"><img src="images/mianbao.png" alt="Project 4" data-index="3"></div>
+            <div class="project"><img src="images/mianbao-2.png" alt="Project 5" data-index="4"></div>
+            <div class="project"><img src="images/mianbao-3.png" alt="Project 6" data-index="5"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="contact">
+    <div class="container">
+      <h2>Contact</h2>
+      <p>Want to collaborate? Don’t hesitate to get in touch.</p>
+      <a href="mailto:contact@lv-tica.com" class="mailto">contact@lv-tica.com</a>
+
+      <form id="contactForm">
+        <label><input type="text" name="name" placeholder="Name" required></label>
+        <label><input type="email" name="email" placeholder="Email" required></label>
+        <label><textarea name="message" placeholder="Message" required rows="6"></textarea></label>
+        <button type="submit">Send</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="icons">
+        <a href="https://www.instagram.com/lv_tica/" target="_blank"><img src="images/instagram-white.png" alt=""></a>
+        <a href="https://facebook.com" target="_blank"><img src="images/facebook-white.png" alt=""></a>
+        <a href="#"><img src="images/whatsapp-white.png" alt=""></a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- LIGHTBOX -->
+  <div id="lightbox" class="lightbox" aria-hidden="true">
+    <button class="lb-btn lb-close" aria-label="Close">&times;</button>
+    <button class="lb-btn lb-prev" aria-label="Previous">‹</button>
+    <img class="lb-img" src="" alt="">
+    <button class="lb-btn lb-next" aria-label="Next">›</button>
+  </div>
+
+  <!-- JS -->
+  <script>
+    (function(){
+      const root = document.documentElement;
+      const btn = document.getElementById('theme-toggle');
+      const stored = localStorage.getItem('lv_tica_theme');
+
+      if (stored === 'dark') {
+        root.setAttribute('data-theme','dark');
+        btn.setAttribute('aria-pressed','true');
+      }
+
+      function updateToggleLabel(){
+        btn.textContent = root.getAttribute('data-theme') === 'dark' ? '☀' : '☾';
+      }
+      updateToggleLabel();
+
+      btn.addEventListener('click', function(){
+        const isDark = root.getAttribute('data-theme') === 'dark';
+        if (isDark) {
+          root.removeAttribute('data-theme');
+          localStorage.setItem('lv_tica_theme','light');
+          btn.setAttribute('aria-pressed','false');
+        } else {
+          root.setAttribute('data-theme','dark');
+          localStorage.setItem('lv_tica_theme','dark');
+          btn.setAttribute('aria-pressed','true');
+        }
+        updateToggleLabel();
+      });
+
+      const grid = document.getElementById('workGrid');
+      const items = Array.from(grid.querySelectorAll('.project img'));
+      const lightbox = document.getElementById('lightbox');
+      const lbImg = lightbox.querySelector('.lb-img');
+      const btnClose = lightbox.querySelector('.lb-close');
+      const btnNext = lightbox.querySelector('.lb-next');
+      const btnPrev = lightbox.querySelector('.lb-prev');
+      let idx = 0;
+
+      function openLB(i){
+        idx = i;
+        lbImg.src = items[i].src;
+        lightbox.classList.add('show');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeLB(){
+        lightbox.classList.remove('show');
+        document.body.style.overflow = '';
+      }
+
+      items.forEach((img,i)=>{ img.addEventListener('click',()=>openLB(i)); });
+      btnClose.addEventListener('click', closeLB);
+      btnNext.addEventListener('click', ()=> openLB((idx+1)%items.length));
+      btnPrev.addEventListener('click', ()=> openLB((idx-1+items.length)%items.length));
+
+      const form = document.getElementById('contactForm');
+      form.addEventListener('submit', function(e){
+        e.preventDefault();
+        const fd = new FormData(form);
+        const name = fd.get('name');
+        const email = fd.get('email');
+        const message = fd.get('message');
+
+        if(!name.trim() || !email.trim() || !message.trim()){
+          alert('Please complete all fields');
+          return;
+        }
+
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if(!re.test(email)){
+          alert('Please enter a valid email');
+          return;
+        }
+
+        const subject = encodeURIComponent('Contact from lv_tica — ' + name);
+        const body = encodeURIComponent('Name: ' + name + '\nEmail: ' + email + '\n\n' + message);
+        window.location.href = 'mailto:contact@lv-tica.com?subject=' + subject + '&body=' + body;
+      });
+
+      const logoVideo = document.getElementById('logoVideo');
+      logoVideo.addEventListener('ended', () => {
+        logoVideo.currentTime = logoVideo.duration;
+        logoVideo.pause();
+      });
+
+    })();
+  </script>
+
+</body>
+</html>
